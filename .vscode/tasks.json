@@ -1,0 +1,18 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build TestBuild",
+        "type": "shell",
+        "command": "make",
+        "args": ["test"],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": ["$gcc"],
+        "detail": "Build the TestBuild target using the Makefile."
+      }
+    ]
+  }
+  

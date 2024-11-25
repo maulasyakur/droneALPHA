@@ -6,12 +6,14 @@
 Map::Map() {
     // Initialize all distances to a value representing no direct connection
     for (int i = 0; i < MAX_SIZE; i++){
-        distanceMatrix[i][i] = 0;
+        for (int j = 0; j < MAX_SIZE; j++){
+            distanceMatrix[i][j] = -1;
+        }
     }
 
     // Initialize all provinces as unvisited
     for (int i = 0; i < MAX_SIZE; i++){
-        visited[i] = 0;
+        visited[i] = -1;
     }
 }
 
@@ -43,6 +45,9 @@ void Map::loadDistanceData(const std::string& filename) {
 
 // Checks if the distance between two provinces is within the allowed maxDistance
 bool Map::isWithinRange(int provinceA, int provinceB, int maxDistance) const {
+    if (provinceA >= 81 && provinceB >= 81 && provinceA < 0 && provinceB < 0){
+        return false;
+    }
     if (distanceMatrix[provinceA][provinceB] <= maxDistance){
         return true;
     }
@@ -51,7 +56,10 @@ bool Map::isWithinRange(int provinceA, int provinceB, int maxDistance) const {
 
 // Marks a province as visited
 void Map::markAsVisited(int province) {
-    visited[countVisitedProvinces()] = province;
+    int visited_count = countVisitedProvinces();
+    if (visited_count < MAX_SIZE){ // not full
+        visited[visited_count] = province;
+    }
 }
 
 // Checks if a province has already been visited
@@ -67,14 +75,14 @@ bool Map::isVisited(int province) const {
 // Resets all provinces to unvisited
 void Map::resetVisited() {
     for (int i = 0; i < MAX_SIZE; i++){
-        visited[i] = 0;
+        visited[i] = -1;
     }
 }
 
 // Function to count the number of visited provinces
 int Map::countVisitedProvinces() const {
     for (int i = 0; i < MAX_SIZE; i++){
-        if (visited[i] == 0){
+        if (visited[i] == -1){
             return i;
         }
     }
@@ -83,6 +91,8 @@ int Map::countVisitedProvinces() const {
 
 // Function to get the distance between two provinces
 int Map::getDistance(int provinceA, int provinceB) const {
-    // TODO: Your code here
-    return 0;
+    if (provinceA < 81 && provinceB < 81){
+        return distanceMatrix[provinceA][provinceB];
+    }
+    return -1;
 }

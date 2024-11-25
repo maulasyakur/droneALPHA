@@ -9,7 +9,7 @@ class Map {
 
 public:
 
-    int distanceMatrix[81][81];  // TO DO: Define 2D distance matrix between provinces
+    int distanceMatrix[MAX_SIZE][MAX_SIZE];  // TO DO: Define 2D distance matrix between provinces
     bool visited[MAX_SIZE];  // Tracks visited provinces
 
     Map(); // Constructor to initialize the map
