@@ -18,33 +18,82 @@ const std::string cities[81] = {
 RoutePlanner::RoutePlanner(const std::string& distance_data, const std::string& priority_data, const std::string& restricted_data, int maxDistance)
     : maxDistance(maxDistance), totalDistanceCovered(0), numPriorityProvinces(0), numWeatherRestrictedProvinces(0) {
 
-    // TO DO:
     // Load map data from file
     // Mark all provinces as unvisited initially
+    map.loadDistanceData(distance_data);
 
     // Load priority provinces
+    loadPriorityProvinces(priority_data);
+
     // Load restricted provinces
+    loadWeatherRestrictedProvinces(restricted_data);
 }
 
 // Load priority provinces from txt file to an array of indices
 void RoutePlanner::loadPriorityProvinces(const std::string& filename) {
-    // TODO: Your code here
+    std::ifstream file(filename);
+
+    if (!file.is_open()){
+        std::cerr << "Cannot open file " << filename << std::endl;
+    }
+
+    std::string line;
+    int i = 0;
+    while (std::getline(file, line)){
+        // Find the opening and closing parentheses
+        size_t start = line.find('(');
+        size_t end = line.find(')');
+
+        if (start != std::string::npos && end != std::string::npos) {
+            // Extract the number between the parentheses
+            int province_number = std::stoi(line.substr(start + 1, end - start - 1));
+            priorityProvinces[i] = province_number;
+        }
+        i++;
+    }
 }
 
 // Load weather-restricted provinces from txt file to an array of indices
 void RoutePlanner::loadWeatherRestrictedProvinces(const std::string& filename) {
-    // TODO: Your code here
+    std::ifstream file(filename);
+
+    if (!file.is_open()){
+        std::cerr << "Cannot open file " << filename << std::endl;
+    }
+
+    std::string line;
+    int i = 0;
+    while (std::getline(file, line)){
+        // Find the opening and closing parentheses
+        size_t start = line.find('(');
+        size_t end = line.find(')');
+
+        if (start != std::string::npos && end != std::string::npos) {
+            // Extract the number between the parentheses
+            int province_number = std::stoi(line.substr(start + 1, end - start - 1));
+            weatherRestrictedProvinces[i] = province_number;
+        }
+        i++;
+    }
 }
 
 // Checks if a province is a priority province
 bool RoutePlanner::isPriorityProvince(int province) const {
-    // TODO: Your code here
+    for (int i = 0; i < MAX_PRIORITY_PROVINCES; i++){
+        if (priorityProvinces[i] == province){
+            return true;
+        }
+    }
     return false;
 }
 
 // Checks if a province is weather-restricted
 bool RoutePlanner::isWeatherRestricted(int province) const {
-    // TODO: Your code here
+    for (int i = 0; i < MAX_WEATHER_RESTRICTED_PROVINCES; i++){
+        if (weatherRestrictedProvinces[i] == province){
+            return true;
+        }
+    }
     return false;
 }
 

@@ -1,9 +1,9 @@
 #include "Map.h"
+#include "RoutePlanner.h"
 #include <iostream>
 
 int main(int argc, char const *argv[])
 {
-    Map map;
-    map.loadDistanceData(argv[3]);
+    RoutePlanner route_planner(argv[3], argv[4], argv[5]);
     return 0;
 }
