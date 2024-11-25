@@ -13,7 +13,7 @@ Map::Map() {
 
     // Initialize all provinces as unvisited
     for (int i = 0; i < MAX_SIZE; i++){
-        visited[i] = -1;
+        visited[i] = false;
     }
 }
 
@@ -45,10 +45,7 @@ void Map::loadDistanceData(const std::string& filename) {
 
 // Checks if the distance between two provinces is within the allowed maxDistance
 bool Map::isWithinRange(int provinceA, int provinceB, int maxDistance) const {
-    if (provinceA >= 81 && provinceB >= 81 && provinceA < 0 && provinceB < 0){
-        return false;
-    }
-    if (distanceMatrix[provinceA][provinceB] <= maxDistance){
+    if (distanceMatrix[provinceA][provinceB] <= maxDistance && provinceA < 81 && provinceB < 81 && provinceA >= 0 && provinceB >= 0){
         return true;
     }
     return false; 
@@ -56,37 +53,30 @@ bool Map::isWithinRange(int provinceA, int provinceB, int maxDistance) const {
 
 // Marks a province as visited
 void Map::markAsVisited(int province) {
-    int visited_count = countVisitedProvinces();
-    if (visited_count < MAX_SIZE){ // not full
-        visited[visited_count] = province;
-    }
+    visited[province] = true;
 }
 
 // Checks if a province has already been visited
 bool Map::isVisited(int province) const {
-    for (int i = 0; i < MAX_SIZE; i++){
-        if (visited[i] == province){
-            return true;
-        }
-    }
-    return false;
+    return visited[province];
 }
 
 // Resets all provinces to unvisited
 void Map::resetVisited() {
     for (int i = 0; i < MAX_SIZE; i++){
-        visited[i] = -1;
+        visited[i] = false;
     }
 }
 
 // Function to count the number of visited provinces
 int Map::countVisitedProvinces() const {
+    int count;
     for (int i = 0; i < MAX_SIZE; i++){
-        if (visited[i] == -1){
-            return i;
+        if (visited[i] == true){
+            count++;
         }
     }
-    return MAX_SIZE;
+    return count;
 }
 
 // Function to get the distance between two provinces

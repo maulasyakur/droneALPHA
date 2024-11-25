@@ -3,7 +3,8 @@
 
 // Constructor to initialize an empty queue
 Queue::Queue() {
-    front = rear = -1;
+    front = -1;
+    rear = -1;
 }
 
 // Adds a province to the end of the queue
@@ -15,7 +16,7 @@ void Queue::enqueue(int province) {
     rear = (rear + 1) % MAX_QUEUE_SIZE;
 
     if (front == -1){
-        front++;
+        front = 0;
     }
 
     data[rear] = province;
@@ -27,28 +28,28 @@ int Queue::dequeue() {
         return -1;
     }
 
-    if (front == rear){
-        int temp = data[front];
+    int temp = data[front];
+
+    if (front == rear) {
         front = rear = -1;
-        return temp;
+    } else {
+        front = (front + 1) % MAX_QUEUE_SIZE;
     }
-    
-    int x = data[front];
-    front = (front + 1) % MAX_QUEUE_SIZE;
-    return x;
+
+    return temp;
 }
 
 // Returns the front province without removing it
 int Queue::peek() const {
+    if (isEmpty()) {
+        return -1;
+    }
     return data[front];
 }
 
 // Checks if the queue is empty
 bool Queue::isEmpty() const {
-    if (front == rear == -1){
-        return true;
-    }
-    return false;
+    return (front == -1 && rear == -1);
 }
 
 // Add a priority neighboring province in a way that will be dequeued and explored before other non-priority neighbors

@@ -1,7 +1,7 @@
 #ifndef STACK_H
 #define STACK_H
 
-#define MAX_SIZE 80  //TO DO: Define a maximum size for the stack to control memory usage considering the problem at hand
+#define MAX_SIZE 81  //TO DO: Define a maximum size for the stack to control memory usage considering the problem at hand
 
 class Stack {
 public:

@@ -8,31 +8,31 @@ Stack::Stack() {
 
 // Adds a province to the top of the stack
 void Stack::push(int province) {
-    if (top < MAX_SIZE - 1){
-        data[++top] = province;
+    if (top >= MAX_SIZE - 1) {
+        return;
     }
-    return;
+    data[++top] = province;
 }
 
 // Removes and returns the top province from the stack
 int Stack::pop() {
-    if (!isEmpty()){
-        return data[top--];
+     if (isEmpty()) {
+        return -1;
     }
-    return 0;
+    return data[top--];
 }
 
 // Returns the top province without removing it
 int Stack::peek() const {
+    if (isEmpty()) {
+        return -1;
+    }
     return data[top];
 }
 
 // Checks if the stack is empty
 bool Stack::isEmpty() const {
-    if (top < 0){
-        return true;
-    }
-    return false;
+    return top < 0;
 }
 
 // Function to get the current size of the stack

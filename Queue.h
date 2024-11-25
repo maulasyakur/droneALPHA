@@ -1,7 +1,7 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#define MAX_QUEUE_SIZE 80  // // TO DO: Define a maximum size for the queue to control memory usage considering the problem at hand
+#define MAX_QUEUE_SIZE 81  // // TO DO: Define a maximum size for the queue to control memory usage considering the problem at hand
 
 class Queue {
 

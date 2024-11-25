@@ -48,9 +48,10 @@ void RoutePlanner::loadPriorityProvinces(const std::string& filename) {
             // Extract the number between the parentheses
             int province_number = std::stoi(line.substr(start + 1, end - start - 1));
             priorityProvinces[i] = province_number;
+            i++;
         }
-        i++;
     }
+    numPriorityProvinces = i; // Set the number of priority provinces in the array
 }
 
 // Load weather-restricted provinces from txt file to an array of indices
@@ -72,14 +73,15 @@ void RoutePlanner::loadWeatherRestrictedProvinces(const std::string& filename) {
             // Extract the number between the parentheses
             int province_number = std::stoi(line.substr(start + 1, end - start - 1));
             weatherRestrictedProvinces[i] = province_number;
+            i++;
         }
-        i++;
     }
+    numWeatherRestrictedProvinces = i; // Set the number of restricted provinces in the array
 }
 
 // Checks if a province is a priority province
 bool RoutePlanner::isPriorityProvince(int province) const {
-    for (int i = 0; i < MAX_PRIORITY_PROVINCES; i++){
+    for (int i = 0; i < numPriorityProvinces; i++){
         if (priorityProvinces[i] == province){
             return true;
         }
@@ -89,7 +91,7 @@ bool RoutePlanner::isPriorityProvince(int province) const {
 
 // Checks if a province is weather-restricted
 bool RoutePlanner::isWeatherRestricted(int province) const {
-    for (int i = 0; i < MAX_WEATHER_RESTRICTED_PROVINCES; i++){
+    for (int i = 0; i < numWeatherRestrictedProvinces; i++){
         if (weatherRestrictedProvinces[i] == province){
             return true;
         }
