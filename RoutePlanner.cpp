@@ -33,12 +33,14 @@ RoutePlanner::RoutePlanner(const std::string& distance_data, const std::string& 
 void RoutePlanner::loadPriorityProvinces(const std::string& filename) {
     std::ifstream file(filename);
 
+    // Handle error
     if (!file.is_open()){
         std::cerr << "Cannot open file " << filename << std::endl;
     }
 
     std::string line;
     int i = 0;
+    // Parse each line
     while (std::getline(file, line)){
         // Find the opening and closing parentheses
         size_t start = line.find('(');
@@ -58,12 +60,14 @@ void RoutePlanner::loadPriorityProvinces(const std::string& filename) {
 void RoutePlanner::loadWeatherRestrictedProvinces(const std::string& filename) {
     std::ifstream file(filename);
 
+    // Handle error
     if (!file.is_open()){
         std::cerr << "Cannot open file " << filename << std::endl;
     }
 
     std::string line;
     int i = 0;
+    // Parse each line
     while (std::getline(file, line)){
         // Find the opening and closing parentheses
         size_t start = line.find('(');
@@ -81,55 +85,131 @@ void RoutePlanner::loadWeatherRestrictedProvinces(const std::string& filename) {
 
 // Checks if a province is a priority province
 bool RoutePlanner::isPriorityProvince(int province) const {
+    // Loop through the priorityProvince array and check
     for (int i = 0; i < numPriorityProvinces; i++){
-        if (priorityProvinces[i] == province){
-            return true;
+        if (priorityProvinces[i] == province){ 
+            return true; // found
         }
     }
-    return false;
+    return false; // not found
 }
 
 // Checks if a province is weather-restricted
 bool RoutePlanner::isWeatherRestricted(int province) const {
+    // Loop through the weatherRestrictedProvinces array and check
     for (int i = 0; i < numWeatherRestrictedProvinces; i++){
         if (weatherRestrictedProvinces[i] == province){
-            return true;
+            return true; // found
         }
     }
-    return false;
+    return false; // not found
 }
 
 // Begins the route exploration from the starting point
 void RoutePlanner::exploreRoute(int startingCity) {
-    // TODO: Your code here
+    // Initialize the starting point into the visited array, stack, and route
+    map.markAsVisited(startingCity);
+    stack.push(startingCity);
+    route.push_back(startingCity);
+
+    while (!isExplorationComplete()){
+        int current_city = stack.peek();
+        exploreFromProvince(current_city);
+    }
 }
 
 // Helper function to explore from a specific province
 void RoutePlanner::exploreFromProvince(int province) {
-    // TODO: Your code here 
+    enqueueNeighbors(province);
+
+    while (!isExplorationComplete()){
+        int next_city = queue.dequeue();
+
+        if (map.isWithinRange(province, next_city, maxDistance)){
+            stack.push(next_city);
+            map.markAsVisited(next_city);
+            route.push_back(next_city);
+            return;
+        }
+    }
+
+    backtrack(); // No valid neighbours, backrack
 }
 
 void RoutePlanner::enqueueNeighbors(int province) {
-    // TO DO: Enqueue priority & non-priority neighbors to the queue according to given constraints
+    for (int i = 0; i < 81; i++){
+        // Skip invalid neighbors
+        if (i == province || isWeatherRestricted(i) || map.isVisited(i)){
+            if (isWeatherRestricted(i)){
+                std::cout << "Province " << cities[province] << " is weather-restricted. Skipping.\n";
+            }
+            continue;
+        }
+
+        if (isPriorityProvince(i)){
+            queue.enqueuePriority(i);
+        } else {
+            queue.enqueue(i);
+        }
+    }
 }
 
 void RoutePlanner::backtrack() {
-    // If you reach a dead-end province 
-    // TODO: Your code here
+    while (!isExplorationComplete()){
+        int current_city = stack.pop();
+    }
 }
 
 bool RoutePlanner::isExplorationComplete() const {
-    // TODO: Your code here
-    return false;
+    return (stack.isEmpty() && queue.isEmpty());
 }
 
 void RoutePlanner::displayResults() const {
-    // TODO: Your code here
     // Display "Journey Completed!" message
+    std::cout << "----------------------------\n"
+              << "Journey Completed!\n"
+              << "----------------------------\n\n";
+
     // Display the total number of provinces visited
+    std::cout << "Total Number of Provinces Visited: " << map.countVisitedProvinces() << "\n";
+
     // Display the total distance covered
+    std::cout << "Total Distance Covered: " << totalDistanceCovered << " km\n\n";
+
     // Display the route in the order visited
+    std::cout << "Route Taken:\n";
+    for (size_t i = 0; i < route.size(); i++) {
+        std::cout << cities[route[i]];
+        if (i < route.size() - 1) {
+            std::cout << " -> ";
+        }
+    }
+    std::cout << "\n\n";
+
     // Priority Province Summary
+    std::cout << "Priority Provinces Status:\n";
+    int priority_prov_visited = 0;
+    for (int i = 0; i < numPriorityProvinces; i++) {
+        int curr_prov = priorityProvinces[i];
+        bool curr_prov_visited = map.isVisited(curr_prov);
+        std::cout << "- " << cities[curr_prov] << " (" << (curr_prov_visited ? "Visited" : "Not Visited") << ")\n";
+        if (curr_prov_visited) {
+            priority_prov_visited++;
+        }
+    }
+    std::cout << "\n";
+
+    // Display the total priority provinces visited
+    std::cout << "Total Priority Provinces Visited: " << priority_prov_visited << " out of " << numPriorityProvinces << "\n";
+
+    // Warning or success message
+    if (priority_prov_visited < numPriorityProvinces) {
+        std::cout << "Warning: Not all priority provinces were visited.\n";
+    } else {
+        std::cout << "Success: All priority provinces were visited.\n";
+    }
+
+    std::cout << std::endl;
 }
 
 

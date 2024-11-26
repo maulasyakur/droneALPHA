@@ -5,7 +5,7 @@
         "name": "Debug droneALPHA",
         "type": "cppdbg",
         "request": "launch",
-        "program": "${workspaceFolder}/droneALPHA",
+        "program": "${workspaceFolder}/DroneALPHA",
         "args": [
           "250",
           "5",
